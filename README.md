@@ -25,8 +25,9 @@ So, the essential question is: "Are we in the limit of small $h$ ?"
 
 We now turn to exploring this in the context of the MESA stellar evolution code. 
 
-# Mini-mini lab 1: Spatial Resolution
+# Mini-mini lab 1: Spatial Resolution 
 
+## Mini-mini lab 1: Overview
 In MESA, the fundamental spatial coordinate is the "mesh", which is broken up into "zones" (sometimes referred to as "cells" or "shells" or "mesh points") of varying mass $dm$, such that $\Sigma_i(dm_i)=M_* - m_\mathrm{IB}$ where $M_*$ is the star mass and $m_\mathrm{IB}$ is the mass inside the model inner boundary, which is 0 for most uses of MESA. The indexing is such that zone `1` corresponds to the surface of the star, and zone `nz` corresponds to the center of the star (or inner boundary). 
 
 To help enforce that the zones are small enough that we are in fact "in the limit of small $h$", at each timestep, MESA can "adaptively" split and merge zones in order to achieve some tolerances in how various quantities vary from zone to zone. 
@@ -35,11 +36,15 @@ However, MESA is guessing what will consitute small $h$. We can make it make bet
 
 To change how MESA discretizes its mesh, we can do 3 things: 
 
-1) We can tell it to increase or decrease the number of zones, e.g. take whatever it thinks the mesh should be and double the number of zones. This is controlled by setting `mesh_delta_coeff` which is `1` by default. A larger value increases the maximum "allowed deltas" and therefore decreases the number of grid points. A smaller value means more grid points with less delta (difference) between them.
+1) We can tell it to increase or decrease the number of zones, e.g. take whatever it thinks the mesh should be and double the number of zones. This is controlled by setting `mesh_delta_coeff` (`=1` by default). A smaller value means more grid points, with less delta (difference) between them. A larger value means fewer grid points, with larger allowed "delta" between them. 
    
-2) We can tell it to increase or decrease the tolerance for various physical targets: For example, perhaps MESA wants to have at most a relative change of 50% in density from zone `i` to zone `i+1`, and perhaps we think that's not good enough; we can specify that we want only 10% variations (Though, note that in this specific example you may end up with a TON of mesh points, because the density varies by tens of orders of magnitude between the core and the surface).
+2) We can also tell MESA to increase or decrease the tolerance for various physical targets directly: For example, perhaps MESA wants to have at most a relative change of 50% in density from zone `i` to zone `i+1`, and perhaps we think that's not good enough; we can specify that we want only 10% variations (Though, note that in this specific example you may end up with a TON of mesh points, because the density varies by tens of orders of magnitude between the core and the surface). There are _many_ controls for this; see `$MESA_DIR/star/defaults/controls.defaults` under the header
    
-3) 
+   `! mesh adjustment`
+   `! ===============`
+Or the equivalent [on the MESA documentation website](https://docs.mesastar.org/en/latest/reference/controls.html#mesh-adjustment)
+
+3) We can create our own custom mesh scheme in `src/run_star_extras.f90`. 
 
 
 
