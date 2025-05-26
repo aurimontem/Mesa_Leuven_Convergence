@@ -33,7 +33,7 @@ To help enforce that the zones are small enough that we are in fact "in the limi
 
 However, MESA is guessing what will consitute small $h$. We can make it make better guesses, and we must always check. 
 
-To change how MESA discretizes its mesh (how it chooses), we can do 3 things: 
+To change how MESA discretizes its mesh, we can do 3 things: 
 
 1) We can tell it to increase or decrease the number of zones, e.g. take whatever it thinks the mesh should be and double the number of zones. 
 2) We can tell it to increase or decrease the tolerance for various physical targets: For example, perhaps MESA wants to have at most a change of $10\%$ in density from zone `i` to zone `i+1`, and perhaps we think that's not good enough; we can specify that we want only $1\%$ variations (Though, note that with this specific example you may end up with a TON of mesh points, because the density varies by tens of orders of magnitude between the core and the surface). 
