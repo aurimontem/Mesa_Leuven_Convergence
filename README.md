@@ -16,4 +16,4 @@ Shown above is a ``forward-difference," since you are taking the difference betw
 
 # Mini-mini lab 1: Spatial Resolution
 
-In \texttt{MESA}
+In $\texttt{MESA}$
