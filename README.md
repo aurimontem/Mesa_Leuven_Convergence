@@ -25,6 +25,9 @@ So, the essential question is: "Are we in the limit of small $h$ ?"
 
 We now turn to exploring this in the context of the MESA stellar evolution code. 
 
+This will be broken up in 3 mini-mini-labs: 
+First, we will explore changing resolution in space. Second, we will explore changing resolution in time. Third, we will explore changing physical approximations within reasonable model uncertainties. While this third task is not exactly the same as testing the "limit of small $h$", it is still **testing the numerical assumptions we are making in modeling the star as a sphere with finite shells**. 
+
 # Mini-mini lab 1: Spatial Resolution 
 
 ## Overview
