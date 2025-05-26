@@ -27,7 +27,7 @@ We now turn to exploring this in the context of the MESA stellar evolution code.
 
 # Mini-mini lab 1: Spatial Resolution
 
-In MESA, the fundamental spatial coordinate is the "mesh", which is broken up into "zones" (sometimes referred to as "cells" or "shells") of varying mass $dm$, such that $\Sigma_i(dm_i)=M_*$. 
+In MESA, the fundamental spatial coordinate is the "mesh", which is broken up into "zones" (sometimes referred to as "cells" or "shells") of varying mass $dm$, such that $\Sigma_i(dm_i)=M_* - m_\mathrm{IB}$. 
 
 To help ensure that the zones are small enough such that we are in fact "in the limit of small $h$", at each timestep, MESA can "adaptively" split and merge zones in order to achieve some tolerances in how various quantities vary from zone to zone. 
 
