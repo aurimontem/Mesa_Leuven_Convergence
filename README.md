@@ -14,4 +14,6 @@ $$ \frac{\partial y}{\partial x} \approx \frac{\Delta y}{\Delta x} = \frac{y[i+1
 
 Shown above is a ``forward-difference," since you are taking the difference between y at step $i+1$ and $y$ at step $i$, and using that to approximate the derivative at step $i$; in practice, modern numerical techniques have _slightly_ fancier ways of doing this. 
 
-# Mini-mini lab 1: 
+# Mini-mini lab 1: Spatial Resolution
+
+In \texttt{MESA}
