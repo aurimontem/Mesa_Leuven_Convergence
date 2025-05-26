@@ -27,11 +27,15 @@ We now turn to exploring this in the context of the MESA stellar evolution code.
 
 # Mini-mini lab 1: Spatial Resolution
 
-In MESA, the fundamental spatial coordinate is the "mesh", which is broken up into "zones" (sometimes referred to as "cells" or "shells") of varying mass $dm$, such that $\Sigma_i(dm_i)=M_* - m_\mathrm{IB}$ where $M_*$ is the star mass and $m_\mathrm{IB}$ is the mass inside the model inner boundary, which is 0 for most uses of MESA. 
+In MESA, the fundamental spatial coordinate is the "mesh", which is broken up into "zones" (sometimes referred to as "cells" or "shells" or "mesh points") of varying mass $dm$, such that $\Sigma_i(dm_i)=M_* - m_\mathrm{IB}$ where $M_*$ is the star mass and $m_\mathrm{IB}$ is the mass inside the model inner boundary, which is 0 for most uses of MESA. The indexing is such that zone `{fortran} 1` corresponds to the surface of the star, and zone `{fortran} nz` corresponds to the center of the star (or inner boundary). 
 
 To help ensure that the zones are small enough such that we are in fact "in the limit of small $h$", at each timestep, MESA can "adaptively" split and merge zones in order to achieve some tolerances in how various quantities vary from zone to zone. 
 
-We can also . 
+To change how MESA discretizes its mesh (how it chooses), we can do 3 things: 
+
+1) We can tell it to increase or decrease the number of zones, e.g. take whatever it thinks the mesh should be and double the number of zones. 
+2) We can tell it to increase or decrease the tolerance for various physical targets: For example, perhaps MESA wants to have at most a change of $10\%$ in density from zone `{fortran} i` to zone `{fortran} i+1`, and perhaps we think that's not good enough; we can specify that we want only $1\%$ variations (Though, note that with this specific example you may end up with a TON of mesh points, because the density varies by tens of orders of magnitude between the core and the surface). 
+3) 
 
 
 
