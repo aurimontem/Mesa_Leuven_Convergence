@@ -55,5 +55,8 @@ To illustrate, we will focus on (1):
 
 ## Mini-mini Lab 1 Instructions: 
 
-Let's set up an example that illustrates (1) the importance of testing spatial resolution and (2) how _bad_ the spatial resolution of a lot of default MESA setups are. We cannot emphasize enough that these labs, the test_suite, and the basic `$MESA_DIR/star/work` directory are NOT converged numerically. 
-Copy a clean work directory 
+Let's set up an example that illustrates (1) the importance of testing spatial resolution and (2) how _bad_ the spatial resolution of a lot of default MESA setups are. In general, we cannot emphasize enough that these labs, the `test_suite`, and the basic `$MESA_DIR/star/work` directory are NOT converged numerically. 
+
+To see this, Copy a clean work directory 
+
+
