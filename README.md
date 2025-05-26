@@ -23,10 +23,11 @@ $$
 
 So, the essential question is: "Are we in the limit of small $h$ ?"
 
-We now turn to exploring this in the context of the MESA stellar evolution code. 
+When we solve the same equations on a finer and finer grid, and find that the answers do not change for the quantities we care about, we call this "converged" or "numerically converged." 
 
-This will be broken up in 3 mini-mini-labs: 
-First, we will explore changing resolution in space. Second, we will explore changing resolution in time. Third, we will explore changing physical approximations within reasonable model uncertainties. While this third task is not exactly the same as testing the "limit of small $h$", it is still **testing the numerical assumptions we are making in modeling the star as a sphere with finite shells**. 
+We now turn to exploring this in the context of the MESA stellar evolution code. This will be broken up in 3 mini-mini-labs: 
+
+In **Mini-mini lab 1**, we will explore changing resolution in space. In **Mini-mini lab 2**, we will explore changing resolution in time. In **Mini-mini lab 3**, we will explore changing physical approximations within reasonable model uncertainties. While this third task is not exactly the same as testing the "limit of small $h$", it is still **testing the numerical assumptions we are making in modeling the star as a sphere with finite shells**, so it is still an important and relevant aspect of convergence testing for astrophysical simulations. 
 
 # Mini-mini lab 1: Spatial Resolution 
 
@@ -48,8 +49,11 @@ To change how MESA discretizes its mesh, we can do 3 things:
    ```
    Or the equivalent [on the MESA documentation website](https://docs.mesastar.org/en/latest/reference/controls.html#mesh-adjustment)
 
-3) We can create our own custom mesh scheme in `src/run_star_extras.f90`. 
+3) We can create our own custom mesh scheme in `src/run_star_extras.f90`. We may turn to this as a bonus task, time permitting.
 
+To illustrate, we will focus on (1): 
 
+## Mini-mini Lab 1 Instructions: 
 
-
+Let's set up an example that illustrates (1) the importance of testing spatial resolution and (2) how _bad_ the spatial resolution of a lot of default MESA setups are. We cannot emphasize enough that these labs, the test_suite, and the basic `$MESA_DIR/star/work` directory are NOT converged numerically. 
+Copy a clean work directory 
