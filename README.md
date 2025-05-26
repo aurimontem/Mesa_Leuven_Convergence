@@ -59,6 +59,11 @@ To change how MESA discretizes its mesh, we can do 3 things:
 
 Let's set up an example that illustrates (1) the importance of testing spatial resolution and (2) how _bad_ the spatial resolution of a lot of default MESA setups are. In general, we cannot emphasize enough that these labs, the `test_suite`, and the basic `$MESA_DIR/star/work` directory are NOT converged numerically. 
 
-To see this, Copy a clean work directory 
+To see this, copy a clean work directory 
+
+```bash
+cp -r $MESA_DIR/star/work ./work_space
+cd work_space
+```
 
 
