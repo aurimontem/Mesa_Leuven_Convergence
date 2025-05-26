@@ -44,10 +44,12 @@ To change how MESA discretizes its mesh, we can do 3 things:
 2) We can also tell MESA to increase or decrease the tolerance for various physical targets directly: For example, perhaps MESA wants to have at most a relative change of 50% in density from zone `i` to zone `i+1`, and perhaps we think that's not good enough; we can specify that we want only 10% variations (Though, note that in this specific example you may end up with a TON of mesh points, because the density varies by tens of orders of magnitude between the core and the surface). There are _many_ controls for this; see `$MESA_DIR/star/defaults/controls.defaults` under the header
    
    `! mesh adjustment`\\
+   
    `! ===============`
+   
 Or the equivalent [on the MESA documentation website](https://docs.mesastar.org/en/latest/reference/controls.html#mesh-adjustment)
 
-3) We can create our own custom mesh scheme in `src/run_star_extras.f90`. 
+4) We can create our own custom mesh scheme in `src/run_star_extras.f90`. 
 
 
 
