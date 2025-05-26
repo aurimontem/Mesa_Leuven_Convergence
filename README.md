@@ -78,8 +78,8 @@ Dutch_scaling_factor = 4
 ```
 
 To stop during core He burning, change the following in the  `&controls` section of `inlist_project`: 
-``` 
-    stop_near_zams = .false. ! previously .true.
+```fortran
+stop_near_zams = .false. ! previously .true.
 ```
 and 
 ```fortran
@@ -87,6 +87,13 @@ xa_central_lower_limit_species(1) = 'he4' ! previously 'h1'
 xa_central_lower_limit(1) = 2d-1          ! previously 1d-3
 ```
 
-Each member of your table should pick a different `mesh_delta_coeff`. For those with slower computers, you should choose larger values of `mesh_delta_coeff`. 
+Next, each member of your table should pick a different `mesh_delta_coeff` from the set [0.3, 0.5, 1, 2]. 
+For those with slower computers, you should choose larger values of `mesh_delta_coeff`. 
 
+Set 
 
+```fortran
+! mesh
+mesh_delta_coeff = your value ! 1 by default
+max_allowed_nz = 16000 ! default 8000
+```
