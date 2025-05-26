@@ -48,7 +48,8 @@ To change how MESA discretizes its mesh, we can do 3 things:
 ```
 Or the equivalent [on the MESA documentation website](https://docs.mesastar.org/en/latest/reference/controls.html#mesh-adjustment)
 
-4) We can create our own custom mesh scheme in `src/run_star_extras.f90`. 
+3) We can create our own custom mesh scheme in `src/run_star_extras.f90`. 
+
 
 
 
