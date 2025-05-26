@@ -10,6 +10,6 @@ The lecture slides can be found at [this repository, to be updated soon](https:/
 # Overview: 
 When solving a partial differential equation numerically, at its essence, you are approximating a derivative 
 
-$$ \frac{\partial y}{\partial x_i } \approx \frac{\Delta y}{\Delta x_i}$$
+$$ \frac{\partial y}{\partial x} \approx \frac{\Delta y}{\Delta x} = \frac{y[i+1] - y[i]}{x[i+1] - x[i]}$$
 
 # Mini-mini lab 1: 
