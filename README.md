@@ -68,15 +68,24 @@ cd work_space
 
 The default work directory takes a $15M_\odot$ star and evolves it until ZAMS. In the massive star community, a lot of attention recently has been given to binarity, stellar winds, and other physics which changes the properties of the H-rich envelope (much of which we've discussed this week). So, for our purposes, let's engineer a partially-stripped star by cranking up the stellar wind, and evolve it until a slightly more advanced phase, namely, core He depletion. 
 
-To do this, add the following to the `&controls` section of `inlist_project` under the header `! winds`: 
+To increase the wind, add the following to the `&controls` section of `inlist_project` under the header `! winds`: 
 
 ```fortran
 hot_wind_scheme = 'Dutch'
 cool_wind_RGB_scheme = 'Dutch'
 cool_wind_AGB_scheme = 'Dutch'
-Dutch_scaling_factor = dutchwindscale
+Dutch_scaling_factor = 4
 ```
 
+To stop during core He burning, change the following in the  `&controls` section of `inlist_project`: 
+``` 
+    stop_near_zams = .false. ! previously .true.
+```
+and 
+```fortran
+xa_central_lower_limit_species(1) = 'he4' ! previously 'h1'
+xa_central_lower_limit(1) = 2d-1          ! previously 1d-3
+```
 
 Each member of your table should pick a different `mesh_delta_coeff`. For those with slower computers, you should choose larger values of `mesh_delta_coeff`. 
 
