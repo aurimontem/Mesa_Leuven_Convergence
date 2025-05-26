@@ -75,6 +75,11 @@ First, so that everyone can easily share their last HR diagram, add the followin
 pause_before_terminate = .true.
 ```
 
+Let's also start on the main sequence, to save us a couple minutes of runtime. Add the following to the `&star_job` section of `inlist_project`: 
+```fortran
+create_pre_main_sequence_model = .false. ! previously .true. 
+```
+
 Next, to increase the wind, add the following to the `&controls` section of `inlist_project` under the header `! winds`: 
 
 ```fortran
