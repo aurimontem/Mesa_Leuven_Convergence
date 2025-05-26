@@ -1,3 +1,9 @@
+---
+weight: 1
+math: true
+---
+
+
 # MESA@Leuven Friday Morning Lab
 
 # Best Practices: Convergence Testing 
@@ -8,6 +14,7 @@ The lecture slides can be found at [this repository, to be updated soon](https:/
 
 # Overview: 
 When solving a partial differential equation numerically, at its essence, you are approximating a derivative 
+
 $$ \frac{\partial y}{\partial x_i } \approx \frac{\Delta y}{\Delta x_i}$$
 
 # Mini-mini lab 1: 
