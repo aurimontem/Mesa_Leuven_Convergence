@@ -1,4 +1,4 @@
-# MESA@Leuven Friday Morning Lab B
+# MESA@Leuven Friday Morning Lab
 
 # Best Practices: Convergence Testing 
 
