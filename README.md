@@ -20,7 +20,7 @@ $$
 f'(x) =\lim _{h \rightarrow 0} \frac{f(a+h)-f(a)}{(a+h) - (a)}
 $$
 
-So, the essential question is: ``Are we in the limit of small h?"
+So, the essential question is: "Are we in the limit of small $h$ ?"
 
 # Mini-mini lab 1: Spatial Resolution
 
