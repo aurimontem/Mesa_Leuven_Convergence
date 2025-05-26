@@ -3,9 +3,11 @@
 
 # Best Practices: Convergence Testing 
 
-In this brief morning lab session, we will go over best practices for solving partial differential equations numericall, with applications to the MESA Stellar Evolution Code.
+In this brief morning lab session, we will go over best practices for solving partial differential equations numerically, specifically in the context of the MESA Stellar Evolution Code.
 
 The lecture slides can be found at [this repository, to be updated soon](https://broken-url.com). 
+
+Solutions can be found at [this repository, to be updated soon](https://broken-url.com). 
 
 ## Lab Overview: 
 When solving a (partial) differential equation numerically, you are essentially approximating a _derivative_ as a _difference_. 
