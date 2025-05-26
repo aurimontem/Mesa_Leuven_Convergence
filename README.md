@@ -38,11 +38,12 @@ In MESA, the fundamental spatial coordinate is the "mesh", which is broken up in
 
 To help enforce that the zones are small enough that we are in fact "in the limit of small $h$", at each timestep, MESA can "adaptively" split and merge zones in order to achieve some tolerances in how various quantities vary from zone to zone. 
 
-However, MESA is guessing what will consitute small $h$. We can make it make better guesses, and we must always check. 
+However, in choosing a mesh, MESA is guessing at what consitutes "small $h$". 
+We can make it make better guesses, and we must always check it for errors. 
 
 To change how MESA discretizes its mesh, we can do 3 things: 
 
-1) We can tell it to increase or decrease the number of zones, e.g. take whatever it thinks the mesh should be and double the number of zones. This is controlled by setting `mesh_delta_coeff` (`=1` by default). A smaller value means more grid points, with less delta (difference) between them. A larger value means fewer grid points, with larger allowed "delta" between them. 
+1) We can tell MESA to increase or decrease the number of zones, e.g. take whatever it thinks the mesh should be and (double? triple? 10x? halve?) the number of zones. This is controlled by setting `mesh_delta_coeff` (`=1` by default). A smaller value means more grid points, with less delta (difference) between them. A larger value means fewer grid points, with larger allowed "delta" between them. 
    
 2) We can also tell MESA to increase or decrease the tolerance for various physical targets directly: For example, perhaps MESA wants to have at most a relative change of 50% in density from zone `i` to zone `i+1`, and perhaps we think that's not good enough; we can specify that we want only 10% variations (Though, note that in this specific example you may end up with a TON of mesh points, because the density varies by tens of orders of magnitude between the core and the surface). There are _many_ controls for this; see `$MESA_DIR/star/defaults/controls.defaults` under the header
    ```fortran
@@ -53,7 +54,6 @@ To change how MESA discretizes its mesh, we can do 3 things:
 
 3) We can create our own custom mesh scheme in `src/run_star_extras.f90`. We may turn to this as a bonus task, time permitting.
 
-To illustrate, we will focus on (1): 
 
 ## Mini-mini Lab 1 Instructions: 
 
