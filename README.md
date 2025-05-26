@@ -1,8 +1,3 @@
----
-weight: 1
-math: true
----
-
 
 # MESA@Leuven Friday Morning Lab
 
