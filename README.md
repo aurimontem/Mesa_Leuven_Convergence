@@ -6,3 +6,8 @@ In this brief morning lab session, we will go over best practices for solving pa
 
 The lecture slides can be found at [this repository, to be updated soon](https://broken-url.com). 
 
+# Overview: 
+When solving a partial differential equation numerically, at its essence, you are approximating a derivative 
+$$ \frac{\partial y}{\partial x_i } \approx \frac{\Delta y}{\Delta x_i}$$
+
+# Mini-mini lab 1: 
