@@ -7,7 +7,7 @@ In this brief morning lab session, we will go over best practices for solving pa
 
 The lecture slides can be found at [this repository, to be updated soon](https://broken-url.com). 
 
-# Overview: 
+## Lab Overview: 
 When solving a (partial) differential equation numerically, you are essentially approximating a _derivative_ as a _difference_. 
 For a quantity $y$ which varies with some coordinate $x$, this resembles the following:
 
@@ -27,7 +27,7 @@ We now turn to exploring this in the context of the MESA stellar evolution code.
 
 # Mini-mini lab 1: Spatial Resolution 
 
-## Mini-mini lab 1: Overview
+## Overview
 In MESA, the fundamental spatial coordinate is the "mesh", which is broken up into "zones" (sometimes referred to as "cells" or "shells" or "mesh points") of varying mass $dm$, such that $\Sigma_i(dm_i)=M_* - m_\mathrm{IB}$ where $M_*$ is the star mass and $m_\mathrm{IB}$ is the mass inside the model inner boundary, which is 0 for most uses of MESA. The indexing is such that zone `1` corresponds to the surface of the star, and zone `nz` corresponds to the center of the star (or inner boundary). 
 
 To help enforce that the zones are small enough that we are in fact "in the limit of small $h$", at each timestep, MESA can "adaptively" split and merge zones in order to achieve some tolerances in how various quantities vary from zone to zone. 
