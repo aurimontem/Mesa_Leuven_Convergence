@@ -68,7 +68,14 @@ cd work_space
 
 The default work directory takes a $15M_\odot$ star and evolves it until ZAMS. In the massive star community, a lot of attention recently has been given to binarity, stellar winds, and other physics which changes the properties of the H-rich envelope (much of which we've discussed this week). So, for our purposes, let's engineer a partially-stripped star by cranking up the stellar wind, and evolve it until a slightly more advanced phase, namely, core He depletion. 
 
-To increase the wind, add the following to the `&controls` section of `inlist_project` under the header `! winds`: 
+
+First, so that everyone can easily share their last HR diagram, add the following to the `&star_job` section of `inlist_project`: 
+
+```fortran
+pause_before_terminate = .true.
+```
+
+Next, to increase the wind, add the following to the `&controls` section of `inlist_project` under the header `! winds`: 
 
 ```fortran
 hot_wind_scheme = 'Dutch'
