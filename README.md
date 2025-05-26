@@ -14,6 +14,14 @@ $$ \frac{\partial y}{\partial x} \approx \frac{\Delta y}{\Delta x} = \frac{y[i+1
 
 Shown above is a ``forward-difference," since you are taking the difference between y at step $i+1$ and $y$ at step $i$, and using that to approximate the derivative at step $i$; in practice, modern numerical techniques have _slightly_ fancier ways of doing this. 
 
+How do we know this is a good approximation? Without diving deep into the formal theory of numerical errors, let's note that a derivative 
+
+$$
+f'(x) =\lim _{h \rightarrow 0} \frac{f(a+h)-f(a)}{(a+h) - (a)}
+$$
+
+So, the essential question is: ``Are we in the limit of small h?"
+
 # Mini-mini lab 1: Spatial Resolution
 
-In $\texttt{MESA}$
+In MESA, 
