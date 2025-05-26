@@ -59,11 +59,25 @@ To change how MESA discretizes its mesh, we can do 3 things:
 
 Let's set up an example that illustrates (1) the importance of testing spatial resolution and (2) how _bad_ the spatial resolution of a lot of default MESA setups are. In general, we cannot emphasize enough that these labs, the `test_suite`, and the basic `$MESA_DIR/star/work` directory are NOT converged numerically. 
 
-To see this, copy a clean work directory 
+To see this, copy a clean work directory and enter:
 
 ```bash
 cp -r $MESA_DIR/star/work ./work_space
 cd work_space
 ```
+
+The default work directory takes a $15M_\odot$ star and evolves it until ZAMS. In the massive star community, a lot of attention recently has been given to binarity, stellar winds, and other physics which changes the properties of the H-rich envelope (much of which we've discussed this week). So, for our purposes, let's engineer a partially-stripped star by cranking up the stellar wind, and evolve it until a slightly more advanced phase, namely, core He depletion. 
+
+To do this, add the following to the `&controls` section of `inlist_project` under the header `! winds`: 
+
+```fortran
+hot_wind_scheme = 'Dutch'
+cool_wind_RGB_scheme = 'Dutch'
+cool_wind_AGB_scheme = 'Dutch'
+Dutch_scaling_factor = dutchwindscale
+```
+
+
+Each member of your table should pick a different `mesh_delta_coeff`. For those with slower computers, you should choose larger values of `mesh_delta_coeff`. 
 
 
