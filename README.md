@@ -110,7 +110,7 @@ mesh_delta_coeff = VALUE ! 1 by default
 max_allowed_nz = 16000 ! default 8000
 ```
 
-Now you're ready! Clean make and run! 
+Now you're ready! In the terminal, from your working directory, clean make and run! 
 
 ```bash
 ./clean && ./mk && ./rn 
@@ -144,7 +144,6 @@ FIX BELOW:
    Or the equivalent [on the MESA documentation website](https://docs.mesastar.org/en/latest/reference/controls.html#mesh-adjustment)
 
 6) We can create our own custom timestepping in `src/run_star_extras.f90`, but in this case instead of a `use_other_mesh` routine, we will choose timesteps in `extras_finish_step` and `extras_check_model`. We may turn to this as a bonus task, time permitting.
-
 
 ## Mini-mini Lab 2 Instructions: 
 
@@ -188,7 +187,7 @@ Set this by adding the following to your inlist and replacing `VALUE` with the a
 time_delta_coeff = VALUE 
 ```
 
-Now you're ready! Clean make and run! 
+Now you're ready! In the terminal, from your working directory, clean make and run! 
 
 ```bash
 ./clean && ./mk && ./rn 
@@ -199,3 +198,4 @@ For comparison, record the final **Mass**, **Radus**, **$T_\mathrm{eff}$**, **Lu
 
 
 
+One more note: Often it is good practice to run the resolution test by varying the spatial and temporal resolution together. 
