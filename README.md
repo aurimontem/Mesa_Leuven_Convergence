@@ -103,11 +103,10 @@ For those with slower computers, you should choose larger values of `mesh_delta_
 If you have a very fast computer, you can try other values, but it's recommended not to go below 0.2 for the sake of this exercise 
 (or, if you do, be prepared to kill the run). 
 
-Set 
-
+Set this by adding the following to your inlist and replacing `VALUE` with the appropriate value: 
 ```fortran
 ! mesh
-mesh_delta_coeff = your value ! 1 by default
+mesh_delta_coeff = VALUE ! 1 by default
 max_allowed_nz = 16000 ! default 8000
 ```
 
