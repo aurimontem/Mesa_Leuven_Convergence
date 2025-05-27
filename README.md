@@ -66,27 +66,26 @@ cp -r $MESA_DIR/star/work ./work_space
 cd work_space
 ```
 
-The default work directory takes a $15M_\odot$ star and evolves it until ZAMS. In the massive star community, a lot of attention recently has been given to binarity, stellar winds, and other physics which changes the properties of the H-rich envelope (much of which we've discussed this week). So, for our purposes, let's engineer a partially-stripped star by cranking up the stellar wind, and evolve it until a slightly more advanced phase, namely, core He depletion. 
+The default work directory takes a $15M_\odot$ star and evolves it until ZAMS. In the massive star community, a lot of attention recently has been given to stellar winds, binarity, and other physics which may impact the properties of the H-rich envelope (much of which we've discussed this week). Let's make a massive star and evolve it until it's later along its core He burning phase, and let's turn on the stellar wind. 
 
-
-First, so that everyone can easily share their last HR diagram, add the following to the `&star_job` section of `inlist_project`: 
+First, so that everyone can easily share their last HR diagram with eachother at the table, add the following to the `&star_job` section of `inlist_project`: 
 
 ```fortran
 pause_before_terminate = .true.
 ```
 
-Let's also start on the main sequence, to save us a couple minutes of runtime. Add the following to the `&star_job` section of `inlist_project`: 
+Let's also start on the main sequence, to save us a minute or two of runtime. Add the following to the `&star_job` section of `inlist_project`: 
 ```fortran
 create_pre_main_sequence_model = .false. ! previously .true. 
 ```
 
-Next, to increase the wind, add the following to the `&controls` section of `inlist_project` under the header `! winds`: 
+Next, turn on mass loss via the 'Dutch' wind prescription. To do this, add the following to the `&controls` section of `inlist_project` under the header `! winds`: 
 
 ```fortran
 hot_wind_scheme = 'Dutch'
 cool_wind_RGB_scheme = 'Dutch'
 cool_wind_AGB_scheme = 'Dutch'
-Dutch_scaling_factor = 4
+Dutch_scaling_factor = 1
 ```
 
 To stop during core He burning, change the following in the  `&controls` section of `inlist_project`: 
@@ -99,8 +98,10 @@ xa_central_lower_limit_species(1) = 'he4' ! previously 'h1'
 xa_central_lower_limit(1) = 2d-1          ! previously 1d-3
 ```
 
-Next, each member of your table should pick a different `mesh_delta_coeff` from the set [0.3, 0.5, 1, 2]. 
+Next, each member of your table should pick a different `mesh_delta_coeff` from the set [0.3, 0.5, 1, 2].
 For those with slower computers, you should choose larger values of `mesh_delta_coeff`. 
+If you have a very fast computer, you can try other values, but it's recommended not to go below 0.2 for the sake of this exercise 
+(or, if you do, be prepared to kill the run). 
 
 Set 
 
@@ -109,3 +110,12 @@ Set
 mesh_delta_coeff = your value ! 1 by default
 max_allowed_nz = 16000 ! default 8000
 ```
+
+Now you're ready! Clean make and run! 
+
+```bash
+./clean && ./mk && ./rn 
+```
+
+Compare the HR diagram that pops up with those produced by people at your table with a different mesh delta coeff. Do your diagrams agree? Disagree? 
+For comparison, record the final **Mass**, **Radus**, **$T_\mathrm{eff}$**, **Luminosity**, and **star age**. 
