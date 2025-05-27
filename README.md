@@ -116,5 +116,86 @@ Now you're ready! Clean make and run!
 ./clean && ./mk && ./rn 
 ```
 
-Compare the HR diagram that pops up with those produced by people at your table with a different mesh delta coeff. Do your diagrams agree? Disagree? 
+Compare the HR diagram that pops up with those produced by people at your table with a different mesh delta coeff. Do your diagrams agree? Disagree? Which agree better? 
 For comparison, record the final **Mass**, **Radus**, **$T_\mathrm{eff}$**, **Luminosity**, and **star age**. 
+
+
+
+
+# Mini-mini lab 2: Temporal Resolution 
+
+## Overview
+MESA takes timesteps that it chooses based on various criteria. To help enforce that the time steps are small enough that we are in fact "in the limit of small $h$" where now $h$ represents an increment in time $dt$. 
+
+Like choosing a mesh, MESA is guessing at what consitutes "small $h$" (though MESA is doing this adaptively, picking a timestep to reach tolerance targets). GIVE MORE EXPLANATION OF THIS. 
+
+To change how MESA selects its timestep, we can likewise do 3 things: 
+
+1) We can tell MESA to multiply the timestep it originally selects by a `time_delta_coeff`, analogous to `mesh_delta_coeff` (`=1` by default). Like with mesh, a smaller value means finer sampling in time, with less delta (difference) between them. A larger value means coarser sampling in time, with larger allowed "delta" between them. 
+   
+2) We can also tell MESA to increase or decrease the tolerance for various physical targets directly.
+  
+FIX BELOW: 
+5) For example, perhaps MESA wants to have at most a relative change of 50% in density from zone `i` to zone `i+1`, and perhaps we think that's not good enough; we can specify that we want only 10% variations (Though, note that in this specific example you may end up with a TON of mesh points, because the density varies by tens of orders of magnitude between the core and the surface). There are _many_ controls for this; see `$MESA_DIR/star/defaults/controls.defaults` under the header
+   ```fortran
+   ! mesh adjustment   
+   ! ===============
+   ```
+   Or the equivalent [on the MESA documentation website](https://docs.mesastar.org/en/latest/reference/controls.html#mesh-adjustment)
+
+6) We can create our own custom timestepping in `src/run_star_extras.f90`, but in this case instead of a `use_other_mesh` routine, we will choose timesteps in `extras_finish_step` and `extras_check_model`. We may turn to this as a bonus task, time permitting.
+
+
+## Mini-mini Lab 2 Instructions: 
+
+Let's set up an example that illustrates (1) the importance of testing spatial resolution and (2) how _bad_ the spatial resolution of a lot of default MESA setups are. In general, we cannot emphasize enough that these labs, the `test_suite`, and the basic `$MESA_DIR/star/work` directory are NOT converged numerically. 
+
+To see this, copy a clean work directory and enter:
+
+```bash
+cp -r $MESA_DIR/star/work ./work_time
+cd work_time
+```
+
+Let's do the same thing as before, adding the following to the `&star_job` section of `inlist_project`: 
+
+```fortran
+pause_before_terminate = .true.
+create_pre_main_sequence_model = .false. ! previously .true. 
+```
+
+Just like before, change the winds and stopping condition in the `&controls` section of `inlist_project`: 
+
+```fortran
+hot_wind_scheme = 'Dutch'
+cool_wind_RGB_scheme = 'Dutch'
+cool_wind_AGB_scheme = 'Dutch'
+Dutch_scaling_factor = 1
+
+stop_near_zams = .false. ! previously .true.
+xa_central_lower_limit_species(1) = 'he4' ! previously 'h1'
+xa_central_lower_limit(1) = 2d-1          ! previously 1d-3
+```
+
+Next, each member of your table should pick a different `time_delta_coeff` from the set [0.3, 0.5, 1, 2].
+For those with slower computers, you should choose larger values of `time_delta_coeff`. 
+If you have a very fast computer, you can try other values, but it's recommended not to go below 0.2 for the sake of this exercise 
+(or, if you do, be prepared to kill the run). 
+
+Set this by adding the following to your inlist and replacing `VALUE` with the appropriate value: 
+```fortran
+! timesteps
+time_delta_coeff = VALUE 
+```
+
+Now you're ready! Clean make and run! 
+
+```bash
+./clean && ./mk && ./rn 
+```
+
+Compare the HR diagram that pops up with those produced by people at your table with different timestepping. Do your diagrams agree? Disagree? Which agree better? 
+For comparison, record the final **Mass**, **Radus**, **$T_\mathrm{eff}$**, **Luminosity**, and **star age**. 
+
+
+
