@@ -68,7 +68,7 @@ A summary of these may also be found [on the MESA documentation website](https:/
 
 T3) We can also tell MESA to cut or increase the timestep in `src/run_star_extras.f90` via user-defined criteria, especially in the `extras_check_model` routine, by directly manipulating the `s% dt` in the star info structure. 
 
-# Mini-mini Lab 1 Instructions: 
+# Mini-mini Lab 1: Spatial and Temporal Resolution testing
 
 Let's set up an example that illustrates (1) the importance of testing resolution and (2) how _bad_ the default resolution in MESA is for certain regimes. 
 In general, we cannot emphasize enough that these labs, the `test_suite`, and the basic `$MESA_DIR/star/work` directory are NOT converged numerically. 
