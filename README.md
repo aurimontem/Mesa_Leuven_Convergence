@@ -73,8 +73,6 @@ T3) We can also tell MESA to cut or increase the timestep in `src/run_star_extra
 Let's set up an example that illustrates (1) the importance of testing resolution and (2) how _bad_ the default resolution in MESA is for certain regimes. 
 In general, we cannot emphasize enough that these labs, the `test_suite`, and the basic `$MESA_DIR/star/work` directory are NOT converged numerically. 
 
-DO NOT USE DEFAULTS AS A STARTING POINT FOR SCIENCE RUNS UNLESS YOU HAVE DONE ROBUST RESOLUTION TESTING! 
-
 Let's start as close to MESA defaults as possible. Copy a clean work directory and enter it:
 
 ```bash
@@ -105,9 +103,14 @@ xa_central_lower_limit_species(1) = 'he4' ! previously 'h1'
 xa_central_lower_limit(1) = 2d-1          ! previously 1d-3
 ```
 
-It is often good practice to change your time and mesh resoltion together, though in principle these can be varied independently. Today we will use methods S1/T1. We mention the other methods above in order to remind the user that there are lots of good ways to do things in MESA depending on your problem. 
+Though not strictly necessary, let's have the history be output every timestep. Add the following to the `&controls` section of your `inlist_project`: 
+```fortran 
+history_interval = 1 
+```
 
-Each member of your table should pick a unique `mesh_delta_coeff` from the set [0.3, 0.5, 1, 2]. Make sure everyone at your table is exploring a different value. 
+Now we are ready for the resolution test. It is often good practice to change your time and mesh resoltion together, though in principle these can be varied independently. Today we will use methods S1/T1. We mention the other methods above in order to remind the user that there are lots of good ways to do things in MESA depending on your problem. 
+
+Have each member of your table select a unique `mesh_delta_coeff` from the set [0.3, 0.5, 1, 2]. Make sure everyone at your table chooses a different value. 
 
 **NOTE: For those with slower computers, you should choose larger values of `mesh_delta_coeff`. ** If you have a very fast computer, feel free to try other values, but it's recommended not to go below 0.2 for the sake of time in this lab block (or, if you do, be prepared to kill the run). 
 
@@ -123,21 +126,29 @@ mesh_delta_coeff = VALUE ! 1 by default
 max_allowed_nz = 16000 ! default 8000
 ```
 
-Great, you're ready to run! In the terminal, from your working directory, clean make and run! 
+Finally, it will be helpful to see what's actually going on in the model as timesteps are taken. 
+In inlist_pgstar, add the following line to produce a Kippenhahn Diagram: 
+
+```fortran 
+kipp_win_flag = .true.
+```
+
+With that, you're ready to run! In the terminal, from your working directory, clean make and run! 
 
 ```bash
 ./clean && ./mk && ./rn 
 ```
 
 Watch the run evolve, and watch the runs of others at your table. Compare the HR diagram that pops up with those produced by people at your table with a different mesh_delta_coeff / time_delta_coeff. Do your diagrams agree? Disagree? Which agree better? 
-For comparison, record the final **Mass**, **Radus**, **$T_\mathrm{eff}$**, **Luminosity**, and **star age**. 
 
+For comparison to others at the table and to other runs you do in subsequent Mini-mini-labs, record the final **Mass**, **Radus**, **$T_\mathrm{eff}$**, **Luminosity**, and **star age**.  If you want to do other runs yourself, or if you are doing this lab asynchronously outside of the MESA@Leuven school, you can also save your LOGS folder to a safe location where it won't be overwritten. 
 
+==KEY TAKEAWAY: DO NOT USE DEFAULTS AS A STARTING POINT FOR SCIENCE RUNS UNLESS YOU HAVE DONE ROBUST RESOLUTION TESTING!==
 
+# Mini-mini lab 2: Resolution test failed! What do we do?  
 
-# Mini-mini lab 2: Temporal Resolution 
-
-## Overview
+There is no generalized procedure for a failed resolution test, but it is a sign that you need to change your setup. In the most extreme cases, you may need an entirely new set of inlist parameters that modify the MESA defaults quite heavily. It may be a good idea to post to the MESA users list, in case someone else has dealt with this before.  
+In this case, 
 MESA takes timesteps that it chooses based on various criteria. To help enforce that the time steps are small enough that we are in fact "in the limit of small $h$" where now $h$ represents an increment in time $dt$. 
 
 Like choosing a mesh, MESA is guessing at what consitutes "small $h$" (though MESA is doing this adaptively, picking a timestep to reach tolerance targets). GIVE MORE EXPLANATION OF THIS. 
