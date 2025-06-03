@@ -1,7 +1,5 @@
 
-# MESA@Leuven Friday Morning Lab
-
-# Best Practices: Convergence Testing 
+# MESA@Leuven Best Practices Lab -- Convergence Testing (Friday Morning)
 
 In this brief morning lab session, we will go over best practices for solving partial differential equations numerically, specifically in the context of the MESA Stellar Evolution Code.
 
@@ -32,9 +30,9 @@ We now turn to exploring this in the context of the MESA stellar evolution code.
 In **Mini-mini lab 1**, we will explore changing resolution in space and time. In **Mini-mini lab 2**, we will briefly discuss what to do when a resolution test _fails_. 
 In **Mini-mini lab 3**, we will explore changing physical approximations within reasonable model uncertainties. Though not explicitly about numerical resolution testing, the third task is likewise **testing the numerical assumptions we are making in modeling the star as a sphere with finite shells**, so it is still a relevant aspect of convergence testing for astrophysical simulations. 
 
-## Spatial and Temporal Resolution in MESA
+## MESA-specific background
 
-## Lagrangian Mesh 
+### Lagrangian Mesh 
 In the equations MESA solves, the fundamental spatial coordinate is made up of concentric shells each with a given mass. This is often referred to as the "mesh", which is broken up into "zones" (sometimes referred to as "cells" or "shells" or "mesh points"). The mass per zone $dm$ can vary, under the constraint that $\Sigma_i(dm_i)=M_* - m_\mathrm{IB}$ where $M_*$ is the star mass and $m_\mathrm{IB}$ is the mass inside the model inner boundary, which is 0 for most uses of MESA. The indexing is such that zone `1` corresponds to the surface of the star, and zone `nz` corresponds to the center of the star (or inner boundary). 
 
 To help enforce that the zones are small enough that we are in fact "in the limit of small $h$", at each timestep, MESA can "adaptively" split and merge zones in order to achieve some tolerances in how various quantities vary from zone to zone. However, in choosing a mesh, MESA is guessing at what consitutes "small $h$". 
@@ -52,7 +50,7 @@ S2) We can also tell MESA to increase or decrease the tolerance for various phys
 
 S3) We can create our own custom mesh scheme in `src/run_star_extras.f90`. We may turn to this as a bonus task, time permitting.
 
-## Adaptive Timesteps
+### Adaptive Timesteps
 
 MESA is an implicit code, meaning it chooses its timestep adaptively and iterates until it achieves a solution within specified tolerances (i.e. specified differences between the right-hand-side and left-hand-side of the equations it's solving, as other controls on how much one model can deviate from one timestep to another). If the errors are too large in a given timestep, then MESA will cut the timestep in an attempt to get closer to "the limit of small $h$" (where now $h$ represents an increment in time $dt$). 
 
@@ -70,7 +68,7 @@ A summary of these may also be found [on the MESA documentation website](https:/
 
 T3) We can also tell MESA to cut or increase the timestep in `src/run_star_extras.f90` via user-defined criteria, especially in the `extras_check_model` routine, by directly manipulating the `s% dt` in the star info structure. 
 
-## Mini-mini Lab 1 Instructions: 
+# Mini-mini Lab 1 Instructions: 
 
 Let's set up an example that illustrates (1) the importance of testing resolution and (2) how _bad_ the default resolution in MESA is for certain regimes. 
 In general, we cannot emphasize enough that these labs, the `test_suite`, and the basic `$MESA_DIR/star/work` directory are NOT converged numerically. 
