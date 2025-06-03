@@ -207,7 +207,7 @@ time_delta_coeff = 1 ! 1 by default
 mesh_delta_coeff = 1 ! 1 by default
 ```
 
-To vary $\alpha_\mathrm{MLT}$, have each member of your table select a unique `mixing_length_alpha` from the set `[1.5, 1.8, 2, 3]`. I'll note that all of these values have been chosen in various works in the literature for RSG modeling. Make sure everyone at your table chooses a different value. In the `&controls` section of your `inlist_project`, set: 
+To vary $\alpha_\mathrm{MLT}$, have each member of your table select a unique `mixing_length_alpha` from the set `[1.5, 1.8, 2, 3]`. Note that all of these values have been chosen in various works in the literature for RSG modeling. Make sure everyone at your table chooses a different value. In the `&controls` section of your `inlist_project`, set: 
 
 ```fortran
 ! mlt
