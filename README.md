@@ -76,8 +76,8 @@ In general, we cannot emphasize enough that these labs, the `test_suite`, and th
 Let's start as close to MESA defaults as possible. Copy a clean work directory and enter it:
 
 ```bash
-cp -r $MESA_DIR/star/work ./work_res1
-cd work_res1
+cp -r $MESA_DIR/star/work ./work_res
+cd work_res
 ```
 
 The default work directory takes a $15M_\odot$ star and evolves it until ZAMS. In the massive star community, a lot of attention recently has been given to stellar winds, binarity, and other physics which may impact the properties of the H-rich envelope (much of which we've discussed this week). Let's evolve that model until it's later along its core He burning phase. 
@@ -110,19 +110,19 @@ history_interval = 1
 
 Now we are ready for the resolution test. It is often good practice to change your time and mesh resoltion together, though in principle these can be varied independently. Today we will use methods S1/T1. We mention the other methods above in order to remind the user that there are lots of good ways to do things in MESA depending on your problem. 
 
-Have each member of your table select a unique `mesh_delta_coeff` from the set [0.3, 0.5, 1, 2]. Make sure everyone at your table chooses a different value. 
+Have each member of your table select a unique `*_delta_coeff` from the set [0.3, 0.5, 1, 2]. Make sure everyone at your table chooses a different value. 
 
-**NOTE: For those with slower computers, you should choose larger values of `mesh_delta_coeff`. ** If you have a very fast computer, feel free to try other values, but it's recommended not to go below 0.2 for the sake of time in this lab block (or, if you do, be prepared to kill the run). 
+**NOTE: For those with slower computers, you should choose larger values of `*_delta_coeff`. ** If you have a very fast computer, feel free to try other values, but it's recommended not to go below 0.2 for the sake of time in this lab block (or, if you do, be prepared to kill the run). 
 
 To change your resolution, add the following controls to your inlist, replacing `VALUE` with the appropriate value: 
 
 ```fortran
 ! timesteps
-time_delta_coeff = VALUE ! 1 by default
+time_delta_coeff = YOUR VALUE ! 1 by default
 max_model_number = 2000 ! off by default -- putting a cap here in case things get too crazy
 
 ! mesh
-mesh_delta_coeff = VALUE ! 1 by default
+mesh_delta_coeff = YOUR VALUE ! 1 by default
 max_allowed_nz = 16000 ! default 8000
 ```
 
@@ -148,78 +148,79 @@ For comparison to others at the table and to other runs you do in subsequent Min
 # Mini-mini lab 2: Resolution test failed! What do we do?  
 
 There is no generalized procedure for a failed resolution test, but it is a sign that you need to change your setup. In the most extreme cases, you may need an entirely new set of inlist parameters that modify the MESA defaults quite heavily. It may be a good idea to post to the MESA users list, in case someone else has dealt with this before.  
-In this case, 
-MESA takes timesteps that it chooses based on various criteria. To help enforce that the time steps are small enough that we are in fact "in the limit of small $h$" where now $h$ represents an increment in time $dt$. 
+In this case, inspecting the Kippenhahn diagram has shown that in some runs, especially at high resolution there are convective zones popping in and out of existence near the edge of the core which are a numerical artifact of the mixing length theory prescription. You can try to get rid of these by pruning the convective gaps, setting overshooting / core boundary mixing, or other techniques. The one we will try here is turning on `convective_pre_mixing`, which was introduced in MESA IV  (Paxton et al 2018) in order to resolve discrepancies between gradients near convective boundaries especially in massive stars. Note that the `predictive_mixing` option introduced in MESA V (Paxton et al 2019) is even better-suited for this problem, but often takes longer, so we will skip it for the sake of the lab duration. 
 
-Like choosing a mesh, MESA is guessing at what consitutes "small $h$" (though MESA is doing this adaptively, picking a timestep to reach tolerance targets). GIVE MORE EXPLANATION OF THIS. 
-
-To change how MESA selects its timestep, we can likewise do 3 things: 
-
-1) We can tell MESA to multiply the timestep it originally selects by a `time_delta_coeff`, analogous to `mesh_delta_coeff` (`=1` by default). Like with mesh, a smaller value means finer sampling in time, with less delta (difference) between them. A larger value means coarser sampling in time, with larger allowed "delta" between them. 
-   
-2) We can also tell MESA to increase or decrease the tolerance for various physical targets directly.
-  
-FIX BELOW: 
-5) For example, perhaps MESA wants to have at most a relative change of 50% in density from zone `i` to zone `i+1`, and perhaps we think that's not good enough; we can specify that we want only 10% variations (Though, note that in this specific example you may end up with a TON of mesh points, because the density varies by tens of orders of magnitude between the core and the surface). There are _many_ controls for this; see `$MESA_DIR/star/defaults/controls.defaults` under the header
-   ```fortran
-   ! mesh adjustment   
-   ! ===============
-   ```
-   Or the equivalent [on the MESA documentation website](https://docs.mesastar.org/en/latest/reference/controls.html#mesh-adjustment)
-
-6) We can create our own custom timestepping in `src/run_star_extras.f90`, but in this case instead of a `use_other_mesh` routine, we will choose timesteps in `extras_finish_step` and `extras_check_model`. We may turn to this as a bonus task, time permitting.
-
-## Mini-mini Lab 2 Instructions: 
-
-Let's set up an example that illustrates (1) the importance of testing spatial resolution and (2) how _bad_ the spatial resolution of a lot of default MESA setups are. In general, we cannot emphasize enough that these labs, the `test_suite`, and the basic `$MESA_DIR/star/work` directory are NOT converged numerically. 
-
-To see this, copy a clean work directory and enter:
-
-```bash
-cp -r $MESA_DIR/star/work ./work_time
-cd work_time
-```
-
-Let's do the same thing as before, adding the following to the `&star_job` section of `inlist_project`: 
+Using the same inlists as the end of your previous run, turn on convective pre-mixing by adding the following to the `&controls` section of `inlist project`: 
 
 ```fortran
-pause_before_terminate = .true.
-create_pre_main_sequence_model = .false. ! previously .true. 
+  ! mixing
+  do_conv_premix = .true.
+  use_Ledoux_criterion = .true.
 ```
+ 
+Make sure to keep your unique `*_delta_coeff` from the set [0.3, 0.5, 1, 2] as well as the stopping condition during core He burning.
+Run the model again, and watch the HR diagram and Kippenhahn diagram evolve this time.  
 
-Just like before, change the winds and stopping condition in the `&controls` section of `inlist_project`: 
-
-```fortran
-hot_wind_scheme = 'Dutch'
-cool_wind_RGB_scheme = 'Dutch'
-cool_wind_AGB_scheme = 'Dutch'
-Dutch_scaling_factor = 1
-
-stop_near_zams = .false. ! previously .true.
-xa_central_lower_limit_species(1) = 'he4' ! previously 'h1'
-xa_central_lower_limit(1) = 2d-1          ! previously 1d-3
-```
-
-Next, each member of your table should pick a different `time_delta_coeff` from the set [0.3, 0.5, 1, 2].
-For those with slower computers, you should choose larger values of `time_delta_coeff`. 
-If you have a very fast computer, you can try other values, but it's recommended not to go below 0.2 for the sake of this exercise 
-(or, if you do, be prepared to kill the run). 
-
-Set this by adding the following to your inlist and replacing `VALUE` with the appropriate value: 
-```fortran
-! timesteps
-time_delta_coeff = VALUE 
-```
-
-Now you're ready! In the terminal, from your working directory, clean make and run! 
 
 ```bash
 ./clean && ./mk && ./rn 
 ```
 
-Compare the HR diagram that pops up with those produced by people at your table with different timestepping. Do your diagrams agree? Disagree? Which agree better? 
-For comparison, record the final **Mass**, **Radus**, **$T_\mathrm{eff}$**, **Luminosity**, and **star age**. 
+Again, record the final **Mass**, **Radus**, **$T_\mathrm{eff}$**, **Luminosity**, and **star age**. Likewise, you can also save your LOGS folder to a safe location where it won't be overwritten. What has changed? Do the results look better? Discuss briefly at your table why this might be. 
+
+# Mini-mini lab 3: Varying 1D 'physics' prescriptions
+
+It is also important to remember that discretizing differential equations onto a finite grid in space and time is not the only approximation or engineering technique that we employ in 1D stellar evolution modeling (e.g. with MESA). If you have a science result, you want to be sure that it's robust to your inputs, numerical choices, _and_ modeling assumptions within physical reason. 
+
+A very central part of stellar evolution modeling is the treatment of energy transport, and specifically the balance between radiative diffusion versus convection. In fact the failed resolution test was in part mediated by changing how we handle the convective (in)stability criterion. 
+
+MESA and most stellar evolution software instruments treat convection via the Mixing Length Theory (MLT) prescription (Bohm-Vitense 1958; see recent review by Joyce & Tayar 2023). There have been discussions of the Mixing Length Theory already this week. I'll also point the interested lab-scholar to extensive content on MLT in the context of supergiant envelopes in the last year's [MESA Down Under 2024 Tuesday Lab](https://sites.google.com/view/massive-stars-mesa-down-under/welcome?authuser=0), especially the slides and background text surrounding Minilab 2. 
+
+At heart, the assumption of mixing length theory is that the characteristic length scale for convective transport (called the mixing length, $\ell$ ) is a multiple of the Pressure Scale Height $H$: 
+$$
+\ell = \alpha_\mathrm{MLT} H, 
+$$ 
+
+where $\alpha_\mathrm{MLT}$ is the mixing length coefficient. Higher values of $\alpha_\mathrm{MLT}$ mean that your prescription for convection is more efficient at carrying flux, lower values correspond to lower efficiencies. 
+
+This is often calibrated to the sun, which depending on the stellar evolution code, atmosphere tables, and many many other factors often gives a values somewhere around $\alpha_\mathrm{MLT}=1.8$. However, this is a choice, and has systematic consequences which impact the stellar radius and other quantities of interest especially when the outer stellar envelope is convective. Evolved massive stars often show evidence of higher values of $\alpha_\mathrm{MLT}$ (really, the evidence is hotter $T_\mathrm{eff}$/smaller radii than most models with lower $\alpha_\mathrm{MLT}$ predict). 
+
+Let's leave the resolution testing directory, but copy your setup from minilab 2 to a new directory to play with the mixing length (and remove old logs files, photos, executables, etc):  
+```bash
+cd .. 
+cp -r work_res work_alpha
+cd work_alpha
+rm -r LOGS
+rm -r png
+rm -r photos/*
+```
+
+Let's revert to the default resolution here, having decided that with CPM on it's "okay enough for our lab":  
+
+```fortran
+! timesteps
+time_delta_coeff = 1 ! 1 by default
+mesh_delta_coeff = 1 ! 1 by default
+```
+
+To vary $\alpha_\mathrm{MLT}$, have each member of your table select a unique `mixing_length_alpha` from the set [1.5, 1.8, 2, 3]. Make sure everyone at your table chooses a different value. In the `&controls` section of your `inlist_project`, set: 
+
+```fortran
+! mlt
+  mixing_length_alpha = YOUR ALPHA VALUE
+```
+
+Run the model again, and watch the HR diagram and Kippenhahn diagram evolve this time.  
+
+```bash
+./clean && ./mk && ./rn 
+```
+
+Again record the final **Mass**, **Radus**, **$T_\mathrm{eff}$**, **Luminosity**, and **star age**. Compare to the others at your table. What has changed? Discuss briefly at your table what differences you see and why they might appear. 
+
+You should notice that higher values of $\alpha$ correspond to (in this limited application) smaller radii and hotter effective temperatures. 
+
+Does this matter? It depends on what you care about! Just be sure to explain why it does or doesn't matter. Just as an example, if you fit supernova lightcurves using stellar models with systematically large radii (systematically low values of $\alpha_\mathrm{MLT}$), you will recover systematically low masses and explosion energies, because the supernova luminosity depends in part on the radius of the progenitor star. However, if you only care whether or not the star explodes, or the chemical evolution of stars, the core undergoing fusion and collapse is more or less _insensitive_ to changes in $\alpha_\mathrm{MLT}$ except insofar as a hotter $T_\mathrm{eff}$ changes the stellar wind mass loss rate (which we neglect entirely in our setup here). 
 
 
 
-One more note: Often it is good practice to run the resolution test by varying the spatial and temporal resolution together. 
