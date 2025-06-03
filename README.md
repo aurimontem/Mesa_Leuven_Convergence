@@ -180,6 +180,7 @@ A very central part of stellar evolution modeling is the treatment of energy tra
 MESA and most stellar evolution software instruments treat convection via the Mixing Length Theory (MLT) prescription (Bohm-Vitense 1958; see recent review by Joyce & Tayar 2023). There have been discussions of the Mixing Length Theory already this week. I'll also point the interested lab-scholar to extensive content on MLT in the context of supergiant envelopes in the last year's [MESA Down Under 2024 Tuesday Lab](https://sites.google.com/view/massive-stars-mesa-down-under/welcome?authuser=0), especially the slides and background text surrounding Minilab 2. 
 
 At heart, the assumption of mixing length theory is that the characteristic length scale for convective transport (called the mixing length, $\ell$ ) is a multiple of the Pressure Scale Height $H$: 
+
 $$
 \ell = \alpha_\mathrm{MLT} H, 
 $$ 
