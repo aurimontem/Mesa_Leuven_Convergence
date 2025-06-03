@@ -110,7 +110,7 @@ history_interval = 1
 
 Now we are ready for the resolution test. It is often good practice to change your time and mesh resoltion together, though in principle these can be varied independently. Today we will use methods S1/T1. We mention the other methods above in order to remind the user that there are lots of good ways to do things in MESA depending on your problem. 
 
-Have each member of your table select a unique `*_delta_coeff` from the set [0.3, 0.5, 1, 2]. Make sure everyone at your table chooses a different value. 
+Have each member of your table select a unique `*_delta_coeff` from the set `[0.3, 0.5, 1, 2]`. Make sure everyone at your table chooses a different value. 
 
 **NOTE: For those with slower computers, you should choose larger values of `*_delta_coeff`. ** If you have a very fast computer, feel free to try other values, but it's recommended not to go below 0.2 for the sake of time in this lab block (or, if you do, be prepared to kill the run). 
 
@@ -161,7 +161,7 @@ Using the same inlists as the end of your previous run, turn on convective pre-m
   use_Ledoux_criterion = .true.
 ```
  
-Make sure to keep your unique `*_delta_coeff` from the set [0.3, 0.5, 1, 2] as well as the stopping condition during core He burning.
+Make sure to keep your unique `*_delta_coeff` from the set `[0.3, 0.5, 1, 2]` as well as the stopping condition during core He burning.
 Run the model again, and watch the HR diagram and Kippenhahn diagram evolve this time.  
 
 
@@ -206,14 +206,14 @@ time_delta_coeff = 1 ! 1 by default
 mesh_delta_coeff = 1 ! 1 by default
 ```
 
-To vary $\alpha_\mathrm{MLT}$, have each member of your table select a unique `mixing_length_alpha` from the set [1.5, 1.8, 2, 3]. Make sure everyone at your table chooses a different value. In the `&controls` section of your `inlist_project`, set: 
+To vary $\alpha_\mathrm{MLT}$, have each member of your table select a unique `mixing_length_alpha` from the set `[1.5, 1.8, 2, 3]`. I'll note that all of these values have been chosen in various works in the literature for RSG modeling. Make sure everyone at your table chooses a different value. In the `&controls` section of your `inlist_project`, set: 
 
 ```fortran
 ! mlt
   mixing_length_alpha = YOUR ALPHA VALUE
 ```
 
-Run the model again, and watch the HR diagram and Kippenhahn diagram evolve this time.  
+Run the model, and watch the HR diagram and Kippenhahn diagram evolve, comparing to others in your group.  
 
 ```bash
 ./clean && ./mk && ./rn 
@@ -224,6 +224,4 @@ Again record the final **Mass**, **Radus**, **$T_\mathrm{eff}$**, **Luminosity**
 You should notice that higher values of $\alpha$ correspond to (in this limited application) smaller radii and hotter effective temperatures. 
 
 Does this matter? It depends on what you care about! Just be sure to explain why it does or doesn't matter. Just as an example, if you fit supernova lightcurves using stellar models with systematically large radii (systematically low values of $\alpha_\mathrm{MLT}$), you will recover systematically low masses and explosion energies, because the supernova luminosity depends in part on the radius of the progenitor star. However, if you only care whether or not the star explodes, or the chemical evolution of stars, the core undergoing fusion and collapse is more or less _insensitive_ to changes in $\alpha_\mathrm{MLT}$ except insofar as a hotter $T_\mathrm{eff}$ changes the stellar wind mass loss rate (which we neglect entirely in our setup here). 
-
-
 
