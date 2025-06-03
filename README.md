@@ -143,11 +143,14 @@ Watch the run evolve, and watch the runs of others at your table. Compare the HR
 
 For comparison to others at the table and to other runs you do in subsequent Mini-mini-labs, record the final **Mass**, **Radus**, **$T_\mathrm{eff}$**, **Luminosity**, and **star age**.  If you want to do other runs yourself, or if you are doing this lab asynchronously outside of the MESA@Leuven school, you can also save your LOGS folder to a safe location where it won't be overwritten. 
 
+If something looks funky, maybe inspect the Kippenhahn diagram...
+
 ==KEY TAKEAWAY: DO NOT USE DEFAULTS AS A STARTING POINT FOR SCIENCE RUNS UNLESS YOU HAVE DONE ROBUST RESOLUTION TESTING!==
 
 # Mini-mini lab 2: Resolution test failed! What do we do?  
 
 There is no generalized procedure for a failed resolution test, but it is a sign that you need to change your setup. In the most extreme cases, you may need an entirely new set of inlist parameters that modify the MESA defaults quite heavily. It may be a good idea to post to the MESA users list, in case someone else has dealt with this before.  
+
 In this case, inspecting the Kippenhahn diagram has shown that in some runs, especially at high resolution there are convective zones popping in and out of existence near the edge of the core which are a numerical artifact of the mixing length theory prescription. You can try to get rid of these by pruning the convective gaps, setting overshooting / core boundary mixing, or other techniques. The one we will try here is turning on `convective_pre_mixing`, which was introduced in MESA IV  (Paxton et al 2018) in order to resolve discrepancies between gradients near convective boundaries especially in massive stars. Note that the `predictive_mixing` option introduced in MESA V (Paxton et al 2019) is even better-suited for this problem, but often takes longer, so we will skip it for the sake of the lab duration. 
 
 Using the same inlists as the end of your previous run, turn on convective pre-mixing by adding the following to the `&controls` section of `inlist project`: 
