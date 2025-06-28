@@ -1,11 +1,10 @@
-
 # MESA@Leuven Best Practices Lab — Convergence Testing
 
 In this brief morning lab session, we will go over best practices for solving partial differential equations numerically, specifically in the context of the MESA Stellar Evolution Code.
 
-The lecture slides can be found at [this repository, to be updated soon](https://broken-url.com). 
+The lecture slides can additionally be found at [this repository, to be updated soon](https://github.com/aurimontem/Mesa_Leuven_Convergence/). 
 
-Solutions can be found at [this repository, to be updated soon](https://broken-url.com). 
+Solutions can be found at [this repository, to be updated soon](https://github.com/aurimontem/Mesa_Leuven_Convergence/). 
 
 ## Lab Overview: 
 When solving a (partial) differential equation numerically, you are essentially approximating a _derivative_ as a _difference_. 
@@ -13,7 +12,7 @@ For a quantity $y$ which varies with some coordinate $x$, this resembles the fol
 
 $$ \frac{\partial y}{\partial x} \approx \frac{\Delta y}{\Delta x} = \frac{y[i+1] - y[i]}{x[i+1] - x[i]}$$
 
-This is a "forward-difference," since it evaluates the difference between y at a step forward, $i+1$, and $y$ at a given step, $i$, and using that to approximate the derivative at step $i$. In practice, modern numerical techniques are just _slightly_ fancier ways of approximating a derivative as a difference between zones or between times, and then solving the set of equations corresponding to the values at each point. 
+This is a "forward-difference," since it evaluates the difference between y at a step forward, $i+1$, and $y$ at a given step, $i$, and uses that to approximate the derivative at step $i$. In practice, modern numerical techniques are just _slightly_ fancier ways of approximating a derivative as a difference between zones or between times, and then solving the set of equations corresponding to the values at each point. 
 
 How do we know this is a good approximation? Without diving deep into the formal theory of numerical errors, let's note that a derivative is defined by taking the limit of the slope, $\left(f(x + h) - f(x)\right)/h$, as $h$ approaches 0: 
 
@@ -33,7 +32,7 @@ In **Mini-mini lab 3**, we will explore changing physical approximations within 
 ## MESA-specific background
 
 ### Lagrangian Mesh 
-In the equations MESA solves, the fundamental spatial coordinate is made up of concentric shells each with a given mass. This is often referred to as the "mesh", which is broken up into "zones" (sometimes referred to as "cells" or "shells" or "mesh points"). The mass per zone $dm$ can vary, under the constraint that $\sum_i(dm_i)=M_* - m_\mathrm{IB}$ where $M_*$ is the star mass and $m_\mathrm{IB}$ is the mass inside the model inner boundary, which is 0 for most uses of MESA. The indexing is such that zone `1` corresponds to the surface of the star, and zone `nz` corresponds to the center of the star (or inner boundary). 
+In the equations MESA solves, the fundamental spatial coordinate is made up of concentric shells each with a given mass. This is often referred to as the "mesh", which is broken up into "zones" (sometimes referred to as "cells" or "shells" or "mesh points"). The mass per zone $dm$ can vary, under the constraint that the sum of the cell masses is the total mass in the simulation: $\sum_i(dm_i)=M_* - m_\mathrm{IB}$ where $M_*$ is the star mass and $m_\mathrm{IB}$ is the mass inside the model inner boundary, which is 0 for most uses of MESA. The indexing is such that zone `1` corresponds to the surface of the star, and zone `nz` corresponds to the center of the star (or inner boundary). 
 
 To help enforce that the zones are small enough that we are in fact "in the limit of small $h$", at each timestep, MESA can "adaptively" split and merge zones in order to achieve some tolerances in how various quantities vary from zone to zone. However, in choosing a mesh, MESA is guessing at what consitutes "small $h$". 
 
@@ -63,8 +62,8 @@ T2) We can tell MESA to increase or decrease the tolerance for various physical 
    ! timestep controls
    ! =================
 ```
-A broad control that's often used is `varcontrol_target` which specifies how much the model should deviate (defined with a broad metric encompassing a handful of physical quantities) from timestep to timestep. 
-A summary of these may also be found [on the MESA documentation website](https://docs.mesastar.org/en/latest/reference/controls.html#timestep-controls)
+A broad control that's often used is `varcontrol_target` which specifies how much the model should deviate (defined with a broad metric encompassing a handful of physical quantities) from timestep to timestep. However, `varcontrol_target` is not always the best choice, as it is an unweighted average of many individual tolerances which are better treated independently ([see this description in the MESA changelog](https://docs.mesastar.org/en/latest/changelog.html#limitations-on-use-of-varcontrol-target)). 
+A summary of individual timestep control options may also be found [on the MESA documentation website](https://docs.mesastar.org/en/latest/reference/controls.html#timestep-controls). 
 
 T3) We can also tell MESA to cut or increase the timestep in `src/run_star_extras.f90` via user-defined criteria, especially in the `extras_check_model` routine, by directly manipulating the `s% dt` in the star info structure. 
 
@@ -88,7 +87,7 @@ First, so that everyone can easily share their last HR diagram with eachother at
 pause_before_terminate = .true.
 ```
 
-Let's also start on the main sequence, to save us a minute or two of runtime. Add the following to the `&star_job` section of `inlist_project`: 
+Let's also start on the main sequence, to save us a minute or two of runtime. In the `&star_job` section of `inlist_project`, make the following replacement: 
 ```fortran
 create_pre_main_sequence_model = .false. ! previously .true. 
 ```
@@ -97,11 +96,17 @@ To stop during core He burning, change the following in the  `&controls` section
 ```fortran
 stop_near_zams = .false. ! previously .true.
 ```
-and 
+and comment out 
 ```fortran
-xa_central_lower_limit_species(1) = 'he4' ! previously 'h1'
-xa_central_lower_limit(1) = 2d-1          ! previously 1d-3
+! xa_central_lower_limit_species(1) = 'h1' 
+! xa_central_lower_limit(1) = 1d-3
 ```
+and replace with 
+```fortran
+HB_limit = 0.95
+```
+
+This control terminates the evolution when the central Helium fraction falls below `HB_limit`, but only if the central hydrogen fraction is below `1d-4` (see the [documentation](https://docs.mesastar.org/en/latest/reference/controls.html#hb-limit) or the relevent information in `controls.defaults`). This will ensure that we're somewhere towards the beginning of the core helium burning phase, along or after the Horizontal Branch. 
 
 Though not strictly necessary, let's have the history be output every timestep. Add the following to the `&controls` section of your `inlist_project`: 
 ```fortran 
@@ -110,7 +115,7 @@ history_interval = 1
 
 Now we are ready for the resolution test. It is often good practice to change your time and mesh resoltion together, though in principle these can be varied independently. Today we will use methods S1/T1. We mention the other methods above in order to remind the user that there are lots of good ways to do things in MESA depending on your problem. 
 
-Have each member of your table select a unique `*_delta_coeff` from the set `[0.3, 0.5, 1, 2]`. Make sure everyone at your table chooses a different value. 
+Have each member of your table select a unique `*_delta_coeff` from the set `[0.5, 0.75, 1, 2]`. Make sure everyone at your table chooses a different value. 
 
 **NOTE: For those with slower computers, you should choose larger values of `*_delta_coeff`. ** If you have a very fast computer, feel free to try other values, but it's recommended not to go below 0.2 for the sake of time in this lab block (or, if you do, be prepared to kill the run). 
 
@@ -127,10 +132,24 @@ max_allowed_nz = 16000 ! default 8000
 ```
 
 Finally, it will be helpful to see what's actually going on in the model as timesteps are taken. 
-In inlist_pgstar, add the following line to produce a Kippenhahn Diagram: 
+In inlist_pgstar, add the following line to produce a Kippenhahn Diagram and an abundances plot: 
 
 ```fortran 
 kipp_win_flag = .true.
+abundance_win_flag = .true.
+```
+
+To make the Kippenhahn diagram work properly, you will need to add some history columns to your output. Copy the default `history_columns.list` into your current working directory
+
+```bash
+cp $MESA_DIR/star/defaults/history_columns.list .
+```
+
+and edit the local copy of history_columns.list file to tell MESA to output some mixing and burning regions:
+
+```fortran 
+burning_regions 20
+mixing_regions 20
 ```
 
 With that, you're ready to run! In the terminal, from your working directory, clean make and run! 
@@ -139,29 +158,31 @@ With that, you're ready to run! In the terminal, from your working directory, cl
 ./clean && ./mk && ./rn 
 ```
 
-Watch the run evolve, and watch the runs of others at your table. Compare the HR diagram that pops up with those produced by people at your table with a different mesh_delta_coeff / time_delta_coeff. Do your diagrams agree? Disagree? Which agree better? 
+Watch the run evolve, **and** watch the runs of others at your table. Pay attention to the pgstar plots. Likewise, it's generally useful to look at the terminal output when running MESA and be aware of what limits your timesteps (listed under `dt_limit`).
+
+Compare the HR diagram that pops up with those produced by people at your table with a different mesh_delta_coeff / time_delta_coeff. Do your diagrams agree? Disagree? Which agree better? 
 
 For comparison to others at the table and to other runs you do in subsequent Mini-mini-labs, record the final **Mass**, **Radus**, **$T_\mathrm{eff}$**, **Luminosity**, and **star age**.  If you want to do other runs yourself, or if you are doing this lab asynchronously outside of the MESA@Leuven school, you can also save your LOGS folder to a safe location where it won't be overwritten. 
 
-If something looks funky, maybe inspect the Kippenhahn diagram...
+If something looks funky, maybe inspect the Kippenhahn diagram... 
 
 ==KEY TAKEAWAY: DO NOT USE DEFAULTS AS A STARTING POINT FOR SCIENCE RUNS UNLESS YOU HAVE DONE ROBUST RESOLUTION TESTING!==
 
 # Mini-mini lab 2: Resolution test failed! What do we do?  
 
-There is no generalized procedure for a failed resolution test, but it is a sign that you need to change your setup. In the most extreme cases, you may need an entirely new set of inlist parameters that modify the MESA defaults quite heavily. It may be a good idea to post to the MESA users list, in case someone else has dealt with this before.  
+There is no generalized procedure for a failed resolution test, but it is a sign that you need to change your setup. In the most extreme cases, you may need an entirely new set of inlist parameters that modify the MESA defaults quite heavily. It may be a good idea to post to the MESA-users mailing list, in case someone else has dealt with this before.  
 
-In this case, inspecting the Kippenhahn diagram has shown that in some runs, especially at high resolution there are convective zones popping in and out of existence near the edge of the core which are a numerical artifact of the mixing length theory prescription. You can try to get rid of these by pruning the convective gaps, setting overshooting / core boundary mixing, or other techniques. The one we will try here is turning on `convective_pre_mixing`, which was introduced in MESA V  (Paxton et al 2019) in order to resolve discrepancies between gradients near convective boundaries especially in massive stars. (See also the `predictive_mixing` option introduced in MESA IV, Paxton et al 2018). 
+In this case, inspecting the Kippenhahn diagram and abundance plot has shown that in some runs, especially at high resolution, there are convective zones popping in and out of existence near the edge of the core. These are a numerical artifact of the mixing length theory prescription and the 1D convective instability criterion. You can try to get rid of these by pruning the convective gaps (`prune_bad_cz_*`, `min_convective_gap`, etc.), setting overshooting / core boundary mixing (discussed in other labs in this summer school), or other techniques. Other controls which may help include `convective_pre_mixing`, which was introduced in MESA V  (Paxton et al 2019) in order to resolve discrepancies between gradients near convective boundaries especially in massive stars, and the `predictive_mixing` option introduced in MESA IV (Paxton et al 2018). These new options can add a bit of runtime. The fix we will try here is turning on semiconvection, where the thermally unstable convective regions are partially stabilized by composition gradients. This is useful particularly at sharp composition boundaries where heavy elements sit underneath lighter elements at the top of a convective core. The implementation is described in MESA Instrument Paper II (Paxton et al 2013). 
 
 Using the same inlists as the end of your previous run, turn on convective pre-mixing by adding the following to the `&controls` section of `inlist project`: 
 
 ```fortran
   ! mixing
-  do_conv_premix = .true.
+  alpha_semiconvection = 0.01d0
   use_Ledoux_criterion = .true.
 ```
  
-Make sure to keep your unique `*_delta_coeff` from the set `[0.3, 0.5, 1, 2]` as well as the stopping condition during core He burning.
+Make sure to keep your unique `*_delta_coeff` from the set `[0.5, 0.75, 1, 2]` as well as the stopping condition during core He burning.
 Run the model again, and watch the HR diagram and Kippenhahn diagram evolve this time.  
 
 
@@ -169,7 +190,7 @@ Run the model again, and watch the HR diagram and Kippenhahn diagram evolve this
 ./clean && ./mk && ./rn 
 ```
 
-Again, record the final **Mass**, **Radus**, **$T_\mathrm{eff}$**, **Luminosity**, and **star age**. Likewise, you can also save your LOGS folder to a safe location where it won't be overwritten. What has changed? Do the results look better? Discuss briefly at your table why this might be. 
+Again, record the final **Mass**, **Radus**, **$T_\mathrm{eff}$**, **Luminosity**, and **star age**. Likewise, you can also save your LOGS folder to a safe location where it won't be overwritten ([See e.g. the `log_directory` option](https://docs.mesastar.org/en/24.08.1/reference/controls.html#log-directory)). What has changed? Do the results look better? Discuss briefly at your table why this might be. 
 
 # Mini-mini lab 3: Varying 1D 'physics' prescriptions
 
