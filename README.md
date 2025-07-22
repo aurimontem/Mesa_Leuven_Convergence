@@ -4,7 +4,7 @@ In this brief morning lab session, we will go over best practices for solving pa
 
 The lecture slides can be found [here](Goldberg_Slides_MESA_Leuven_Fri_ResTesting.pdf). 
 
-Solutions can be found at the top level of [this repository, to be updated soon](https://github.com/aurimontem/Mesa_Leuven_Convergence/). 
+Solutions can be found at the top level of [this repository](https://github.com/aurimontem/Mesa_Leuven_Convergence/) and are linked below. 
 
 ## Lab Overview: 
 When solving a (partial) differential equation numerically, you are essentially approximating a _derivative_ as a _difference_. 
