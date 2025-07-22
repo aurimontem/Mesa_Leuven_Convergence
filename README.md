@@ -2,9 +2,9 @@
 
 In this brief morning lab session, we will go over best practices for solving partial differential equations numerically, specifically in the context of the MESA Stellar Evolution Code.
 
-The lecture slides can additionally be found at [this repository, to be updated soon](https://github.com/aurimontem/Mesa_Leuven_Convergence/). 
+The lecture slides can be found [here](Goldberg_Slides_MESA_Leuven_Fri_ResTesting.pdf). 
 
-Solutions can be found at [this repository, to be updated soon](https://github.com/aurimontem/Mesa_Leuven_Convergence/). 
+Solutions can be found at the top level of [this repository, to be updated soon](https://github.com/aurimontem/Mesa_Leuven_Convergence/). 
 
 ## Lab Overview: 
 When solving a (partial) differential equation numerically, you are essentially approximating a _derivative_ as a _difference_. 
@@ -68,6 +68,8 @@ A summary of individual timestep control options may also be found [on the MESA 
 T3) We can also tell MESA to cut or increase the timestep in `src/run_star_extras.f90` via user-defined criteria, especially in the `extras_check_model` routine, by directly manipulating the `s% dt` in the star info structure. 
 
 # Mini-mini Lab 1: Spatial and Temporal Resolution testing
+
+**Full solutions available [here](solutions_minimini1.zip)**
 
 Let's set up an example that illustrates (1) the importance of testing resolution and (2) how _bad_ the default resolution in MESA is for certain regimes. 
 In general, we cannot emphasize enough that these labs, the `test_suite`, and the basic `$MESA_DIR/star/work` directory are NOT converged numerically. 
@@ -170,6 +172,8 @@ If something looks funky, maybe inspect the Kippenhahn diagram...
 
 # Mini-mini lab 2: Resolution test failed! What do we do?  
 
+**Full solutions available [here](solutions_minimini2.zip)**
+
 There is no generalized procedure for a failed resolution test, but it is a sign that you need to change your setup. In the most extreme cases, you may need an entirely new set of inlist parameters that modify the MESA defaults quite heavily. It may be a good idea to post to the MESA-users mailing list, in case someone else has dealt with this before.  
 
 In this case, inspecting the Kippenhahn diagram and abundance plot has shown that in some runs, especially at high resolution, there are convective zones popping in and out of existence near the edge of the core. These are a numerical artifact of the mixing length theory prescription and the 1D convective instability criterion. You can try to get rid of these by pruning the convective gaps (`prune_bad_cz_*`, `min_convective_gap`, etc.), setting overshooting / core boundary mixing (discussed in other labs in this summer school), or other techniques. Other controls which may help include `convective_pre_mixing`, which was introduced in MESA V  (Paxton et al 2019) in order to resolve discrepancies between gradients near convective boundaries especially in massive stars, and the `predictive_mixing` option introduced in MESA IV (Paxton et al 2018). These new options can add a bit of runtime. The fix we will try here is turning on semiconvection, where the thermally unstable convective regions are partially stabilized by composition gradients. This is useful particularly at sharp composition boundaries where heavy elements sit underneath lighter elements at the top of a convective core. The implementation is described in MESA Instrument Paper II (Paxton et al 2013). 
@@ -193,6 +197,8 @@ Run the model again, and watch the HR diagram and Kippenhahn diagram evolve this
 Again, record the final **Mass**, **Radus**, **$T_\mathrm{eff}$**, **Luminosity**, and **star age**. Likewise, you can also save your LOGS folder to a safe location where it won't be overwritten ([See e.g. the `log_directory` option](https://docs.mesastar.org/en/24.08.1/reference/controls.html#log-directory)). What has changed? Do the results look better? Discuss briefly at your table why this might be. 
 
 # Mini-mini lab 3: Varying 1D 'physics' prescriptions
+
+**Full solutions available [here](solutions_minimini3.zip)**
 
 It is also important to remember that discretizing differential equations onto a finite grid in space and time is not the only approximation or engineering technique that we employ in 1D stellar evolution modeling (e.g. with MESA). If you have a science result, you want to be sure that it's robust to your inputs, numerical choices, _and_ modeling assumptions within physical reason. 
 
